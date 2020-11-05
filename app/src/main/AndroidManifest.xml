@@ -85,6 +85,11 @@
 				<data android:mimeType="*/*" />
 			</intent-filter>
 		</activity>
+
+		<activity
+			android:name=".ui.SelectDestinationActivity"
+			android:label="@string/app_name">
+		</activity>
 	</application>
 
 </manifest>

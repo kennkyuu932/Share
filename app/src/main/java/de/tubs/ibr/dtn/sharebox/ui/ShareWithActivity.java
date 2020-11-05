@@ -31,12 +31,16 @@ public class ShareWithActivity extends FragmentActivity {
             mService = ((DtnService.LocalBinder)service).getService();
 
             PendingIntent pi = mService.getSelectNeighborIntent();
+            /*
             try {
 				startIntentSenderForResult(pi.getIntentSender(), SELECT_NEIGHBOR, null, 0, 0, 0);
 			} catch (SendIntentException e1) {
 				// error
 				e1.printStackTrace();
 			}
+             */
+            Intent i = new Intent(ShareWithActivity.this, SelectDestinationActivity.class);
+            startActivityForResult(i, SELECT_NEIGHBOR);
         }
 
         public void onServiceDisconnected(ComponentName name) {

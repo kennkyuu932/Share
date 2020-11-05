@@ -32,8 +32,13 @@
     <string name="item_file_text">%1$s</string>
     <string name="listitem_multi_title">Select Items</string>
 
+    <string name="select_destination_text" translatable="false">Destination</string>
+    <string name="select_destination_edittext" translatable="false">dtn://</string>
+    <string name="select_destination_button" translatable="false">SEND</string>
+
     <plurals name="listitem_multi_subtitle">
         <item quantity="one">%d item selected</item>
         <item quantity="other">%d items selected</item>
     </plurals>
+
 </resources>

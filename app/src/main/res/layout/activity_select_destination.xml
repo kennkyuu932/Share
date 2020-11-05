@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/select_destination_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_destination_text" />
+
+    <EditText
+        android:id="@+id/select_destination_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/select_destination_edittext" />
+
+    <Button
+        android:id="@+id/select_destination_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_destination_button" />
+</LinearLayout>
