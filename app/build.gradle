@@ -18,8 +18,8 @@ android {
 
     defaultConfig {
         applicationId "de.tubs.ibr.dtn.mysharebox"
-        minSdkVersion 9
-        targetSdkVersion 22
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode System.getenv("BUILD_NUMBER") as Integer ?: rootProject.ext.versionCode
         versionName createVersionName()
     }
@@ -45,7 +45,22 @@ if (android.signingConfigs.release.storeFile.exists()) {
 }
 
 dependencies {
-    compile 'de.tubs.ibr.dtn:library:1.1.1'
-    compile 'com.android.support:support-v4:23.1.1'
-    compile 'org.apache.commons:commons-compress:1.10'
+    implementation 'de.tubs.ibr.dtn:library:1.1.1'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'org.apache.commons:commons-compress:1.10'
+
+
+
+    // Room dependencies
+    def room_version = "1.1.1"
+    implementation "android.arch.persistence.room:runtime:$room_version"
+    annotationProcessor "android.arch.persistence.room:compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    // optional - RxJava support for Room
+    implementation "android.arch.persistence.room:rxjava2:$room_version"
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "android.arch.persistence.room:guava:$room_version"
+    // Test helpers
+    testImplementation "android.arch.persistence.room:testing:$room_version"
+
+     
 }
