@@ -9,12 +9,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.bazaarvoice.jackson.rison.RisonFactory;
+import com.bazaarvoice.jackson.rison.RisonGenerator;
+import com.bazaarvoice.jackson.rison.RisonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.tubs.ibr.dtn.api.Node;
 import de.tubs.ibr.dtn.api.SingletonEndpoint;
 import de.tubs.ibr.dtn.sharebox.R;
+import de.tubs.ibr.dtn.sharebox.SyncEIDActivity;
 import de.tubs.ibr.dtn.sharebox.data.EIDDao;
 import de.tubs.ibr.dtn.sharebox.data.EIDDatabase;
 import de.tubs.ibr.dtn.sharebox.data.EIDEntity;
@@ -99,6 +109,12 @@ public class SelectDestinationActivity extends Activity {
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
+    }
+
     class DBTask extends AsyncTask<Integer, Integer, Integer> {
 
         EIDDatabase db;
@@ -135,7 +151,8 @@ public class SelectDestinationActivity extends Activity {
                 case 2:
                     List<EIDEntity> list = dao.getAll();
                     for (EIDEntity user: list) {
-                        System.out.println("ユーザー");
+                        Log.d(TAG, "ユーザー");
+                        //Log.d(TAG, user.toString());
                         System.out.println(user.slackWorkspaceId + ":" + user.slackUserId + ":"
                                 + user.Eid + ":" + user.slackUseName);
                     }

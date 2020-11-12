@@ -24,7 +24,7 @@ public interface EIDDao {
     List<EIDEntity> getAll();
 
     @Query("SELECT * FROM EIDEntity WHERE slack_workspace_id = (:slackWorkspaceId) AND slack_user_id = (:slackUserId)")
-    List<EIDEntity> loadAllByIds(String slackWorkspaceId, String slackUserId);
+    List<EIDEntity> search(String slackWorkspaceId, String slackUserId);
 
     @Query("DELETE FROM EIDEntity")
     void deleteAll();
