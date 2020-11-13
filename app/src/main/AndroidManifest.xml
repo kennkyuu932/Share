@@ -91,14 +91,6 @@
 		<activity
 			android:name=".ui.SelectDestinationActivity"
 			android:label="@string/app_name">
-			<!--
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="dtn" android:host="sync.eid" />
-			</intent-filter>
-			-->
 		</activity>
 
 		<activity
@@ -109,6 +101,17 @@
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
 				<data android:scheme="dtn" android:host="sync.eid" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name=".RegisterEIDActivity"
+			android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="dtn" android:host="register.eid" />
 			</intent-filter>
 		</activity>
 	</application>

@@ -150,6 +150,11 @@ public class DtnService extends DTNIntentService {
         return getClient().getSelectNeighborIntent();
     }
 
+    // for register EID to slack
+    public String getClientEndpoint() {
+        return getClient().getEndpoint();
+    }
+
     public boolean isTrusted(Bundle b) {
         // can not check trust relation without the security service
         if (mSecurityService == null) {
