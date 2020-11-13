@@ -39,12 +39,12 @@
     <string name="select_destination_button_dbtest" translatable="false">Insert</string>
     <string name="select_destination_button_dbtest2" translatable="false">Get all</string>
     <string name="select_destination_button_dbtest3" translatable="false">Delete all</string>
-    <string name="select_destination_button_dbtest4" translatable="false">database test</string>
+    <string name="select_destination_button_dbtest4" translatable="false">POST message</string>
 
-    <string name="team_id_text" translatable="false">team_id</string>
-    <string name="user_id_text" translatable="false">user_id</string>
-    <string name="eid_text" translatable="false">eid</string>
-    <string name="real_name_text" translatable="false">real_name</string>
+    <string name="team_id_text" translatable="false">team_id: </string>
+    <string name="user_id_text" translatable="false">user_id: </string>
+    <string name="eid_text" translatable="false">eid: </string>
+    <string name="real_name_text" translatable="false">real_name: </string>
 
 
     <plurals name="listitem_multi_subtitle">

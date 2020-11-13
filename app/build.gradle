@@ -70,4 +70,7 @@ dependencies {
 
     // for RecyclerView
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+
+    // okhtto3 (min api verision 24)
+    //implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.1'
 }

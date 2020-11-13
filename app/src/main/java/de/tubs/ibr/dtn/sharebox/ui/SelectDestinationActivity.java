@@ -13,8 +13,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -32,8 +42,8 @@ import de.tubs.ibr.dtn.sharebox.ui.DestinationRowData;
 import android.support.v7.widget.LinearLayoutManager;
 
 public class SelectDestinationActivity extends Activity {
-    Button button_send;
-    EditText text;
+    //Button button_send;
+    //EditText text;
     Intent intent;
 
     EIDDatabase db;
@@ -59,9 +69,9 @@ public class SelectDestinationActivity extends Activity {
         db = Room.databaseBuilder(getApplicationContext(), EIDDatabase.class, "eid-database").build();
         dao = db.eiddao();
 
-        button_send = (Button)findViewById(R.id.select_destination_button_send);
-        text = (EditText) findViewById(R.id.select_destination_edittext);
-
+        //button_send = (Button)findViewById(R.id.select_destination_button_send);
+        //text = (EditText) findViewById(R.id.select_destination_edittext);
+        /*
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,9 +87,9 @@ public class SelectDestinationActivity extends Activity {
                 finish();
             }
         });
+        */
 
         // test buttons
-
         text2 = (EditText) findViewById(R.id.select_destination_edittext2);
         button_test = (Button)findViewById(R.id.select_destination_button_test);
         button_test2 = (Button)findViewById(R.id.select_destination_button_test2);
@@ -92,7 +102,6 @@ public class SelectDestinationActivity extends Activity {
         button_test4.setOnClickListener(testListener);
 
         // user list
-
         CountDownLatch countDownLatch = new CountDownLatch(1);
         new DBTask(db, dao, countDownLatch).execute(4);
         try {
@@ -117,6 +126,10 @@ public class SelectDestinationActivity extends Activity {
                 Toast.makeText(activityContext, eid, Toast.LENGTH_SHORT).show();
                 // Return to ShareWithActivity
                 setResult(RESULT_OK, intent);
+
+                // Send message in cannnel 'DTN app'
+                new DBTask().execute(5);
+
                 finish();
             }
         };
@@ -148,7 +161,15 @@ public class SelectDestinationActivity extends Activity {
                     new DBTask(db, dao).execute(3);
                     break;
                 case R.id.select_destination_button_test4:
-                    Log.d(TAG, "Click4");
+                    Log.d(TAG, "4: POST message!!!!!");
+                    //CountDownLatch countDownLatch = new CountDownLatch(1);
+                    new DBTask().execute(5);
+                    //try {
+                    //    countDownLatch.await();
+                    //} catch (Exception e){
+                    //    Log.e(TAG, e.getClass().toString());
+                    //    e.printStackTrace();
+                    //}
                     break;
             }
         }
@@ -184,6 +205,15 @@ public class SelectDestinationActivity extends Activity {
             this.dao = dao;
             this.countDownLatch = countDownLatch;
         }
+/*
+        public DBTask(CountDownLatch countDownLatch){
+            super();
+            this.countDownLatch = countDownLatch;
+        }
+*/
+        public DBTask(){
+            super();
+        }
 
         @Override
         protected Integer doInBackground(Integer... integers) {
@@ -215,6 +245,62 @@ public class SelectDestinationActivity extends Activity {
                 case 4:
                     dbList = dao.getAll();
                     countDownLatch.countDown();
+                    break;
+
+                case 5:
+                    final int TIMEOUT_MILLIS = 0;
+                    final StringBuffer sb = new StringBuffer("");
+
+                    HttpURLConnection httpConn = null;
+                    BufferedReader br = null;
+                    InputStream is = null;
+                    InputStreamReader isr = null;
+
+                    try {
+                        URL url = new URL("https://slack.com/api/chat.postMessage");
+                        httpConn = (HttpURLConnection) url.openConnection();
+                        httpConn.setConnectTimeout(TIMEOUT_MILLIS);
+                        httpConn.setReadTimeout(TIMEOUT_MILLIS);
+                        httpConn.setRequestMethod("POST");
+                        httpConn.setUseCaches(false);
+                        httpConn.setDoOutput(true);
+                        httpConn.setDoInput(true);
+
+                        OutputStream os = httpConn.getOutputStream();
+                        final boolean autoFlash = true;
+                        PrintStream ps = new PrintStream(os, autoFlash, "UTF-8");
+                        ps.print("token=xoxb-660008667248-1489147300195-r95c0sR806MWYmzryCOa3Ptj" +
+                                "&channel=D01E665K4ES" +
+                                "&text=送ったよ");
+                        ps.close();
+
+                        final int responseCode = httpConn.getResponseCode();
+                        Log.d(TAG, "responseCode: " + responseCode);
+                        if (responseCode == HttpURLConnection.HTTP_OK) {
+                            Log.d(TAG, "HTTP OK!!");
+                            is = httpConn.getInputStream();
+                            isr = new InputStreamReader(is, "UTF-8");
+                            br = new BufferedReader(isr);
+                            String line = null;
+                            while ((line = br.readLine()) != null) {
+                                sb.append(line);
+                            }
+                            Log.d(TAG, sb.toString());
+                        } else {
+                            // If responseCode is not HTTP_OK
+                        }
+
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getClass().toString());
+                        e.printStackTrace();
+                    } finally {
+                        //countDownLatch.countDown();
+                        if (br != null) try { br.close(); } catch (IOException e) { }
+                        if (isr != null) try { isr.close(); } catch (IOException e) { }
+                        if (is != null) try { is.close(); } catch (IOException e) { }
+                        if (httpConn != null) httpConn.disconnect();
+                        Log.d(TAG, "4: POST message END!!!!!");
+                    }
                     break;
                 default:
                     break;
