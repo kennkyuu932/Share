@@ -40,6 +40,7 @@ public class ShareWithActivity extends FragmentActivity {
 			}
              */
             Intent i = new Intent(ShareWithActivity.this, SelectDestinationActivity.class);
+            i.putExtra("eid", mService.getClientEndpoint());
             startActivityForResult(i, SELECT_NEIGHBOR);
         }
 

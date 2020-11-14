@@ -41,6 +41,9 @@ import de.tubs.ibr.dtn.sharebox.ui.DestinationRecycleViewAdapter;
 import de.tubs.ibr.dtn.sharebox.ui.DestinationRowData;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class SelectDestinationActivity extends Activity {
     //Button button_send;
     //EditText text;
@@ -58,6 +61,7 @@ public class SelectDestinationActivity extends Activity {
     DBTask task;
 
     List<EIDEntity> dbList;
+    String ownId;
 
     final String TAG = "SelectDestination";
 
@@ -127,8 +131,9 @@ public class SelectDestinationActivity extends Activity {
                 // Return to ShareWithActivity
                 setResult(RESULT_OK, intent);
 
-                // Send message in cannnel 'DTN app'
-                new DBTask().execute(5);
+                String id = list.get(position).getUserId();
+                // Send message in channel 'DTN app'
+                new DBTask(db, dao, id, getIntent().getStringExtra("eid")).execute(5);
 
                 finish();
             }
@@ -163,7 +168,7 @@ public class SelectDestinationActivity extends Activity {
                 case R.id.select_destination_button_test4:
                     Log.d(TAG, "4: POST message!!!!!");
                     //CountDownLatch countDownLatch = new CountDownLatch(1);
-                    new DBTask().execute(5);
+                    //new DBTask(eid).execute(5);
                     //try {
                     //    countDownLatch.await();
                     //} catch (Exception e){
@@ -186,6 +191,7 @@ public class SelectDestinationActivity extends Activity {
         EIDDatabase db;
         EIDDao dao;
         String text;
+        String text2;
         CountDownLatch countDownLatch;
 
         public DBTask(EIDDatabase db, EIDDao dao){
@@ -205,6 +211,10 @@ public class SelectDestinationActivity extends Activity {
             this.dao = dao;
             this.countDownLatch = countDownLatch;
         }
+        public DBTask(String destinationId){
+            super();
+            this.text = destinationId;
+        }
 /*
         public DBTask(CountDownLatch countDownLatch){
             super();
@@ -213,6 +223,13 @@ public class SelectDestinationActivity extends Activity {
 */
         public DBTask(){
             super();
+        }
+        public DBTask(EIDDatabase db, EIDDao dao, String destinationId, String eid){
+            super();
+            this.db = db;
+            this.dao = dao;
+            this.text = destinationId;
+            this.text2 = eid;
         }
 
         @Override
@@ -248,59 +265,32 @@ public class SelectDestinationActivity extends Activity {
                     break;
 
                 case 5:
-                    final int TIMEOUT_MILLIS = 0;
-                    final StringBuffer sb = new StringBuffer("");
+                    String name = dao.searchFromEid(text2).slackUseName;
 
-                    HttpURLConnection httpConn = null;
-                    BufferedReader br = null;
-                    InputStream is = null;
-                    InputStreamReader isr = null;
-
+                    String result = post("https://slack.com/api/conversations.open",
+                        "token=xoxb-660008667248-1489147300195-r95c0sR806MWYmzryCOa3Ptj" +
+                                "&users=" + text);
+                    String channelId = "";
                     try {
-                        URL url = new URL("https://slack.com/api/chat.postMessage");
-                        httpConn = (HttpURLConnection) url.openConnection();
-                        httpConn.setConnectTimeout(TIMEOUT_MILLIS);
-                        httpConn.setReadTimeout(TIMEOUT_MILLIS);
-                        httpConn.setRequestMethod("POST");
-                        httpConn.setUseCaches(false);
-                        httpConn.setDoOutput(true);
-                        httpConn.setDoInput(true);
+                        ObjectMapper mapper = new ObjectMapper();
 
-                        OutputStream os = httpConn.getOutputStream();
-                        final boolean autoFlash = true;
-                        PrintStream ps = new PrintStream(os, autoFlash, "UTF-8");
-                        ps.print("token=xoxb-660008667248-1489147300195-r95c0sR806MWYmzryCOa3Ptj" +
-                                "&channel=D01E665K4ES" +
-                                "&text=送ったよ");
-                        ps.close();
-
-                        final int responseCode = httpConn.getResponseCode();
-                        Log.d(TAG, "responseCode: " + responseCode);
-                        if (responseCode == HttpURLConnection.HTTP_OK) {
-                            Log.d(TAG, "HTTP OK!!");
-                            is = httpConn.getInputStream();
-                            isr = new InputStreamReader(is, "UTF-8");
-                            br = new BufferedReader(isr);
-                            String line = null;
-                            while ((line = br.readLine()) != null) {
-                                sb.append(line);
-                            }
-                            Log.d(TAG, sb.toString());
-                        } else {
-                            // If responseCode is not HTTP_OK
-                        }
-
+                        //convert JSON string to Map
+                        channelId = ((Map)mapper.readValue(result, Map.class).get("channel")).get("id").toString();
                     } catch (Exception e) {
-                        Log.e(TAG, e.getClass().toString());
                         e.printStackTrace();
-                    } finally {
-                        //countDownLatch.countDown();
-                        if (br != null) try { br.close(); } catch (IOException e) { }
-                        if (isr != null) try { isr.close(); } catch (IOException e) { }
-                        if (is != null) try { is.close(); } catch (IOException e) { }
-                        if (httpConn != null) httpConn.disconnect();
-                        Log.d(TAG, "4: POST message END!!!!!");
                     }
+                    result = post("https://slack.com/api/chat.postMessage",
+                            "token=xoxb-660008667248-1489147300195-r95c0sR806MWYmzryCOa3Ptj" +
+                                    "&channel=" + channelId +
+                                    "&text=" + convertToOiginal(name) + " が何か渡したいらしい...．");
+                    Log.d(TAG, result);
+
+                    /*
+                    post("https://slack.com/api/chat.postMessage",
+                            "token=xoxb-660008667248-1489147300195-r95c0sR806MWYmzryCOa3Ptj" +
+                                    "&channel=D01E665K4ES" +
+                                    "&text=送ったよ");
+                    */
                     break;
                 default:
                     break;
@@ -312,6 +302,61 @@ public class SelectDestinationActivity extends Activity {
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             Log.d(TAG, "Finish async task!");
+        }
+
+        protected String post(String strUrl, String param){
+            final int TIMEOUT_MILLIS = 0;
+            final StringBuffer sb = new StringBuffer("");
+
+            HttpURLConnection httpConn = null;
+            BufferedReader br = null;
+            InputStream is = null;
+            InputStreamReader isr = null;
+
+            try {
+                URL url = new URL(strUrl);
+                httpConn = (HttpURLConnection) url.openConnection();
+                httpConn.setConnectTimeout(TIMEOUT_MILLIS);
+                httpConn.setReadTimeout(TIMEOUT_MILLIS);
+                httpConn.setRequestMethod("POST");
+                httpConn.setUseCaches(false);
+                httpConn.setDoOutput(true);
+                httpConn.setDoInput(true);
+
+                OutputStream os = httpConn.getOutputStream();
+                final boolean autoFlash = true;
+                PrintStream ps = new PrintStream(os, autoFlash, "UTF-8");
+                ps.print(param);
+                ps.close();
+
+                final int responseCode = httpConn.getResponseCode();
+                Log.d(TAG, "responseCode: " + responseCode);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    Log.d(TAG, "HTTP OK!!");
+                    is = httpConn.getInputStream();
+                    isr = new InputStreamReader(is, "UTF-8");
+                    br = new BufferedReader(isr);
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                } else {
+                    // If responseCode is not HTTP_OK
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, e.getClass().toString());
+                e.printStackTrace();
+            } finally {
+                //countDownLatch.countDown();
+                if (br != null) try { br.close(); } catch (IOException e) { }
+                if (isr != null) try { isr.close(); } catch (IOException e) { }
+                if (is != null) try { is.close(); } catch (IOException e) { }
+                if (httpConn != null) httpConn.disconnect();
+                Log.d(TAG, "4: POST message END!!!!!");
+            }
+
+            return sb.toString();
         }
     }
 

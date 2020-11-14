@@ -29,4 +29,7 @@ public interface EIDDao {
     @Query("DELETE FROM EIDEntity")
     void deleteAll();
 
+    @Query("SELECT * FROM EIDEntity WHERE eid = (:eid)")
+    EIDEntity searchFromEid(String eid);
+
 }

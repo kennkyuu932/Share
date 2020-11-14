@@ -63,6 +63,8 @@ public class RegisterEIDActivity extends Activity {
             String id = data.get("id").toString();
             String team_id = data.get("team_id").toString();
 
+            Log.d(TAG, eid);
+
             new RegisterTask(eid, id, team_id).execute(0);
 
             Toast.makeText(RegisterEIDActivity.this, "Register!", Toast.LENGTH_SHORT).show();
@@ -131,7 +133,7 @@ public class RegisterEIDActivity extends Activity {
             InputStreamReader isr = null;
 
             try {
-                URL url = new URL("https://59d85265f14a.ngrok.io/android");
+                URL url = new URL("https://274de6a5d500.ngrok.io/android");
                 httpConn = (HttpURLConnection) url.openConnection();
                 httpConn.setConnectTimeout(TIMEOUT_MILLIS);
                 httpConn.setReadTimeout(TIMEOUT_MILLIS);
