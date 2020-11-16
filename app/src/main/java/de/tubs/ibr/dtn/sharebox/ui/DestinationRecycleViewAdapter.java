@@ -51,7 +51,9 @@ public class DestinationRecycleViewAdapter extends RecyclerView.Adapter<Destinat
         return list.size();
     }
 
-    void onViewClick(View v, int position) {
+    void onViewClick(View v, int position) { /* for override */ }
 
+    void setList(List<DestinationRowData> list) {
+        this.list = list;
     }
 }

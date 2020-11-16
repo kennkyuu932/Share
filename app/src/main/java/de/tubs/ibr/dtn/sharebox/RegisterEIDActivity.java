@@ -133,7 +133,7 @@ public class RegisterEIDActivity extends Activity {
             InputStreamReader isr = null;
 
             try {
-                URL url = new URL("https://274de6a5d500.ngrok.io/android");
+                URL url = new URL("https://dce0a29d035e.ngrok.io/android");
                 httpConn = (HttpURLConnection) url.openConnection();
                 httpConn.setConnectTimeout(TIMEOUT_MILLIS);
                 httpConn.setReadTimeout(TIMEOUT_MILLIS);

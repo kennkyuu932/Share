@@ -5,63 +5,9 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
-    <!--
-    <TextView
-        android:id="@+id/select_destination_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_destination_text" />
-
-    <EditText
-        android:id="@+id/select_destination_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/select_destination_edittext"
-        android:inputType="textPersonName"
-        android:autofillHints="" />
-
-    <Button
-        android:id="@+id/select_destination_button_send"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_destination_button_send" />
-    -->
-
-    <Button
-        android:id="@+id/select_destination_button_test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_destination_button_dbtest" />
-
-    <Button
-        android:id="@+id/select_destination_button_test2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_destination_button_dbtest2" />
-
-    <Button
-        android:id="@+id/select_destination_button_test3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_destination_button_dbtest3" />
-
-    <Button
-        android:id="@+id/select_destination_button_test4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_destination_button_dbtest4" />
-
-    <EditText
-        android:id="@+id/select_destination_edittext2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/select_destination_edittext2"
-        android:inputType="textPersonName" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/destination_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
 </LinearLayout>

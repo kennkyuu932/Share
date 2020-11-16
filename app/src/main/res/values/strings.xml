@@ -33,19 +33,13 @@
     <string name="listitem_multi_title">Select Items</string>
 
     <string name="select_destination_text" translatable="false">Destination</string>
-    <string name="select_destination_edittext" translatable="false">dtn://</string>
-    <string name="select_destination_edittext2" translatable="false">Unique ID</string>
-    <string name="select_destination_button_send" translatable="false">SEND</string>
-    <string name="select_destination_button_dbtest" translatable="false">Insert</string>
-    <string name="select_destination_button_dbtest2" translatable="false">Get all</string>
-    <string name="select_destination_button_dbtest3" translatable="false">Delete all</string>
-    <string name="select_destination_button_dbtest4" translatable="false">POST message</string>
 
     <string name="team_id_text" translatable="false">team_id: </string>
     <string name="user_id_text" translatable="false">user_id: </string>
-    <string name="eid_text" translatable="false">eid: </string>
-    <string name="real_name_text" translatable="false">real_name: </string>
+    <string name="eid_text" translatable="false">EID </string>
+    <string name="real_name_text" translatable="false">ユーザ名 </string>
 
+    <string name="select_destination_menu_delete" translatable="false">ユーザリスト削除</string>
 
     <plurals name="listitem_multi_subtitle">
         <item quantity="one">%d item selected</item>
