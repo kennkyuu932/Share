@@ -12,9 +12,11 @@ import java.util.List;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -586,6 +588,7 @@ public class DtnService extends DTNIntentService {
 
         @Override
         public void startBundle(Bundle bundle) {
+            //Log.e("TEST!?", "startBundle〜〜〜〜〜〜ッッッッ!!!!!");
             // store the bundle header locally
             mBundle = bundle;
             mBundleId = new BundleID(bundle);
@@ -593,6 +596,7 @@ public class DtnService extends DTNIntentService {
 
         @Override
         public void endBundle() {
+            //Log.e("TEST!?", "endBundle???????");
             if (mIsDownloading) {
                 // mark the bundle as delivered if this was a complete download
                 Intent i = new Intent(DtnService.this, DtnService.class);

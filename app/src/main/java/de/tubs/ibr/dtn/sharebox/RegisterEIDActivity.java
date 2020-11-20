@@ -41,6 +41,8 @@ public class RegisterEIDActivity extends Activity {
     private DtnService mService = null;
     private Boolean mBound = false;
 
+    final String SLACK_APP_URL = "https://4e44be149ab5.ngrok.io";
+
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
             mService = ((DtnService.LocalBinder)service).getService();
@@ -133,7 +135,7 @@ public class RegisterEIDActivity extends Activity {
             InputStreamReader isr = null;
 
             try {
-                URL url = new URL("https://dce0a29d035e.ngrok.io/android");
+                URL url = new URL(SLACK_APP_URL + "/android");
                 httpConn = (HttpURLConnection) url.openConnection();
                 httpConn.setConnectTimeout(TIMEOUT_MILLIS);
                 httpConn.setReadTimeout(TIMEOUT_MILLIS);
