@@ -6,10 +6,12 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/destination_recycler_view"
+    <TextView
+        android:id="@+id/settingfilename"
         android:layout_width="match_parent"
-        android:layout_height="546dp" />
+        android:layout_height="wrap_content"
+        android:text="@string/setting_file_name"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/EnterFileName"
@@ -19,6 +21,14 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/share_file_name"
-        android:inputType="textLongMessage" />
+        android:inputType="text"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/destination_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

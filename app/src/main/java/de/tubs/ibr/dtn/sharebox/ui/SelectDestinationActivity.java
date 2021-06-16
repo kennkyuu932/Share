@@ -3,6 +3,7 @@ package de.tubs.ibr.dtn.sharebox.ui;
 import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,9 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import de.tubs.ibr.dtn.DTNService;
 import de.tubs.ibr.dtn.api.Node;
 import de.tubs.ibr.dtn.api.SingletonEndpoint;
 import de.tubs.ibr.dtn.sharebox.R;
@@ -54,14 +59,26 @@ public class SelectDestinationActivity extends Activity {
     final int ASYNC_GET_ALL = 1;
     final int ASYNC_DELETE_ALL = 2;
     final int ASYNC_POST = 3;
-    final String SLACK_APP_TOKEN = "xoxb-660008667248-1489147300195-r95c0sR806MWYmzryCOa3Ptj";
+    final String SLACK_APP_TOKEN = "xoxb-1994031519219-2040722764727-AtVZyLvkrDrjmCc6lVPdRDn6";
+
+    private EditText enterfilename;
+
+    private String fnamehint;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_select_destination);
         setTitle("宛先選択");
+
+        enterfilename = findViewById(R.id.EnterFileName);
+
+        Intent f = getIntent();
+        fnamehint = f.getStringExtra("fnameHint");
+        enterfilename.setHint(fnamehint);
+        Log.d(TAG,fnamehint);
 
         // get database
         db = Room.databaseBuilder(getApplicationContext(), EIDDatabase.class, "eid-database").build();
@@ -175,6 +192,12 @@ public class SelectDestinationActivity extends Activity {
                     return ASYNC_GET_ALL;
                 case ASYNC_POST:
                     String name = dao.searchFromEid(eid).slackUseName;
+                    String sharefilename = enterfilename.getText().toString();
+
+
+                    if(sharefilename.isEmpty()){
+                        sharefilename = enterfilename.getHint().toString();
+                    }
 
                     // get ID of channel between destination and DTN app
                     String result = post("https://slack.com/api/conversations.open",
@@ -193,8 +216,10 @@ public class SelectDestinationActivity extends Activity {
                     result = post("https://slack.com/api/chat.postMessage",
                             "token=" + SLACK_APP_TOKEN +
                                     "&channel=" + channelId +
-                                    "&text=" + convertToOiginal(name) + " が何か渡したいらしい...．");
+                                    "&text=" + convertToOiginal(name) + " が" + sharefilename + "を渡したいらしい...．");
+                    Log.d(TAG,"#########");
                     Log.d(TAG, result);
+                    Log.d(TAG,"#########");
                     return ASYNC_POST;
                 default:
                     break;
@@ -292,5 +317,4 @@ public class SelectDestinationActivity extends Activity {
         }
         return result;
     }
-
 }

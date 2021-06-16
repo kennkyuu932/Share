@@ -17,7 +17,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "de.tubs.ibr.dtn.mysharebox"
+        applicationId "de.tubs.ibr.dtn.dtnfileshare"
         minSdkVersion 14
         targetSdkVersion 26
         versionCode System.getenv("BUILD_NUMBER") as Integer ?: rootProject.ext.versionCode

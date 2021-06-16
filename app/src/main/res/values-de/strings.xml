@@ -55,7 +55,7 @@
     <string name="title_activity_download">Archiv</string>
     <string name="title_activity_pending_dialog">Übertragungsanfrage</string>
     <string name="title_activity_settings">Einstellungen</string>
-    <string name="title_activity_sharewith">MyShareBox</string>
+    <string name="title_activity_sharewith">DTNFileShare</string>
 
     <plurals name="notification_pending_download_title">
         <item quantity="one">Übertragung #%2$d (%3$s)</item>

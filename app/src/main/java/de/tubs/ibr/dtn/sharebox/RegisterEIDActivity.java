@@ -41,7 +41,7 @@ public class RegisterEIDActivity extends Activity {
     private DtnService mService = null;
     private Boolean mBound = false;
 
-    final String SLACK_APP_URL = "https://4e44be149ab5.ngrok.io";
+    final String SLACK_APP_URL = "https://slack-dtn-test.glitch.me";
 
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {

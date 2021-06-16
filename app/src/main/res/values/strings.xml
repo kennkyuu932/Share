@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translatable="false">MyShareBox</string>
+    <string name="app_name" translatable="false">DTNFileShare</string>
     <string name="action_settings">Settings</string>
     <string name="empty" translatable="false"></string>
     <string name="remove">Remove</string>
@@ -13,7 +13,7 @@
     <string name="state_aborted">Aborted</string>
     <string name="title_activity_pending_dialog">Transmission request</string>
     <string name="title_activity_download">Archive</string>
-    <string name="title_activity_sharewith">MyShareBox</string>
+    <string name="title_activity_sharewith">DTNFileShare</string>
     
     <string name="button_accept">Accept</string>
     <string name="button_reject">Reject</string>
@@ -40,6 +40,8 @@
     <string name="real_name_text" translatable="false">ユーザ名 </string>
 
     <string name="select_destination_menu_delete" translatable="false">ユーザリスト削除</string>
+    <string name="share_file_name" translatable="false">Enter File Name</string>
+    <string name="setting_file_name" translatable="false">送信ファイル名の設定</string>
 
     <plurals name="listitem_multi_subtitle">
         <item quantity="one">%d item selected</item>

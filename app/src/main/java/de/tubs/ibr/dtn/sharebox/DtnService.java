@@ -518,7 +518,8 @@ public class DtnService extends DTNIntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        
+        Log.d(TAG,"onCreate");
+
         // create notification factory
         mNotificationFactory = new NotificationFactory( this, (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE) );
         

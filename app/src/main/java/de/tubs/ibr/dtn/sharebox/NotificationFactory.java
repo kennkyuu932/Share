@@ -166,7 +166,7 @@ public class NotificationFactory {
         mUploadTimestamp = (new Date()).getTime();
         mUploadBuilder.setContentTitle(mContext.getString(R.string.notification_ongoing_upload_title));
         mUploadBuilder.setContentText(mContext.getResources().getQuantityString(R.plurals.notification_ongoing_upload_text, maxFiles, maxFiles));
-        mUploadBuilder.setSmallIcon(R.drawable.ic_stat_upload);
+        mUploadBuilder.setSmallIcon(R.drawable.myupload);
         mUploadBuilder.setProgress(0, 0, true);
         mUploadBuilder.setOngoing(true);
         
@@ -252,7 +252,7 @@ public class NotificationFactory {
         builder.setContentTitle(contentTitle);
         builder.setContentText(contentText);
         builder.setTicker(mContext.getResources().getQuantityString(R.plurals.notification_pending_download_ticker, pendingCount, pendingCount));
-        builder.setSmallIcon(R.drawable.ic_stat_download);
+        builder.setSmallIcon(R.drawable.mydownload);
         builder.setWhen( System.currentTimeMillis() );
         builder.setOnlyAlertOnce(true);
         
