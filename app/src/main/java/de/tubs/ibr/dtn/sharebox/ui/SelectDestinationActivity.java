@@ -59,7 +59,8 @@ public class SelectDestinationActivity extends Activity {
     final int ASYNC_GET_ALL = 1;
     final int ASYNC_DELETE_ALL = 2;
     final int ASYNC_POST = 3;
-    final String SLACK_APP_TOKEN = "xoxb-1994031519219-2040722764727-AtVZyLvkrDrjmCc6lVPdRDn6";
+    //githubにアップロードする際にslack側で認証トークンが自動的に無効化されるためTOKENの中身を削除
+    final String SLACK_APP_TOKEN = "";
 
     private EditText enterfilename;
 
