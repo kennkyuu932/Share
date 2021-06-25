@@ -2,3 +2,5 @@
 村越允
 
 DTNFileShareのプロジェクト
+
+SelectDestinationActivity.javaのSLACK_BOT_TOKENは認証トークンを公開するとslackがそれを無効化してしまうため""にしている
