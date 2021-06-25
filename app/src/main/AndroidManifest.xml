@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="de.tubs.ibr.dtn.sharebox">
-	
+
+	<!--DTN_COMMUNICATIONの許可?,外部ストレージへの書き出し,バイブレーションへのアクセス,ネットワークへのアクセス-->
 	<uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.VIBRATE"/>

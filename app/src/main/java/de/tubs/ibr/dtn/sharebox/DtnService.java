@@ -50,6 +50,7 @@ import de.tubs.ibr.dtn.sharebox.data.Download.State;
 import de.tubs.ibr.dtn.sharebox.data.PackageFile;
 import de.tubs.ibr.dtn.sharebox.data.TruncatedInputStream;
 import de.tubs.ibr.dtn.sharebox.data.Utils;
+import de.tubs.ibr.dtn.sharebox.ui.SelectDestinationActivity;
 
 public class DtnService extends DTNIntentService {
 
@@ -780,6 +781,8 @@ public class DtnService extends DTNIntentService {
                         for (File f : extractor.getFiles()) {
                             Log.d(TAG, "Extracted file: " + f.getAbsolutePath());
                             mDatabase.put(mBundleId, f);
+                            String downloadname = GetdownloadFilename(f);
+                            SendDownloadSlack(downloadname);
                         }
                         break;
                         
@@ -798,4 +801,25 @@ public class DtnService extends DTNIntentService {
             
         };
     };
+    //受け取ったファイル名を取得
+    public String GetdownloadFilename(File f){
+        int leng = f.getAbsolutePath().length();
+        int fnumber = f.getAbsolutePath().lastIndexOf("/")+1;
+        int flen = leng - fnumber;
+        char[] fnamearray = f.getAbsolutePath().toCharArray();
+        char[] fnamechar = new char[flen];
+        for(int i=0;fnumber < leng;fnumber++,i++){
+            fnamechar[i] = fnamearray[fnumber];
+        }
+        String fnamestring = String.valueOf(fnamechar);
+        Log.d(TAG,"ファイル名" + fnamestring);
+        return fnamestring;
+    }
+
+    //ファイルを受け取ったことをslackで通知を送る
+    public void SendDownloadSlack(String filename){
+        Log.d(TAG,"slackに通知");
+        String name = "namae";
+        String message = name + "が" + filename + "を受け取りました";
+    }
 }
