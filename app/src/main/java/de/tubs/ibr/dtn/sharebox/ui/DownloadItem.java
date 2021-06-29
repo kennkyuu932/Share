@@ -57,7 +57,7 @@ public class DownloadItem extends RelativeLayout {
         String title = getContext().getString(R.string.item_download_title);
         String text = getContext().getString(R.string.item_download_text);
         String side = getContext().getString(R.string.item_download_side);
-        
+
         mLabel.setText(String.format(title, mDownload.getId(), Utils.humanReadableByteCount(mDownload.getLength(), true)));
         mBottomText.setText(String.format(text, mDownload.getBundleId().getSource().toString()));
         mSideText.setText(String.format(side, timestamp));

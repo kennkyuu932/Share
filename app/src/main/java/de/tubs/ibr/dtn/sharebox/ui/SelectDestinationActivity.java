@@ -34,6 +34,7 @@ import java.util.concurrent.CountDownLatch;
 import de.tubs.ibr.dtn.DTNService;
 import de.tubs.ibr.dtn.api.Node;
 import de.tubs.ibr.dtn.api.SingletonEndpoint;
+import de.tubs.ibr.dtn.sharebox.DtnService;
 import de.tubs.ibr.dtn.sharebox.R;
 import de.tubs.ibr.dtn.sharebox.data.EIDDao;
 import de.tubs.ibr.dtn.sharebox.data.EIDDatabase;

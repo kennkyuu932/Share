@@ -106,6 +106,12 @@ public class DtnService extends DTNIntentService {
     NotificationFactory mNotificationFactory = null;
     
     private ServiceError mServiceError = ServiceError.NO_ERROR;
+
+    //slackにメッセージを送るための変数を宣言
+    private String myid = null;
+    private String myeid = null;
+    private String sendeid = null;
+
     
     // the database
     private Database mDatabase = null;
@@ -521,6 +527,10 @@ public class DtnService extends DTNIntentService {
         super.onCreate();
         Log.d(TAG,"onCreate");
 
+        //Slackにメッセージを送るために必要な変数を取得
+
+
+
         // create notification factory
         mNotificationFactory = new NotificationFactory( this, (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE) );
         
@@ -564,6 +574,7 @@ public class DtnService extends DTNIntentService {
         
         if (next != null) {
             if (prefs.getBoolean("download_notifications", true)) {
+                //Log.d(TAG,"//"+next.toString()+"//");
                 mNotificationFactory.showPendingDownload(next, mDatabase.getPending());
             }
         } else {
@@ -781,7 +792,11 @@ public class DtnService extends DTNIntentService {
                         for (File f : extractor.getFiles()) {
                             Log.d(TAG, "Extracted file: " + f.getAbsolutePath());
                             mDatabase.put(mBundleId, f);
+
+                            //Slackで受信の通知を送るための変数を取得
                             String downloadname = GetdownloadFilename(f);
+                            sendeid = GetSendEID(mBundleId.getSource().toString());
+                            //Log.d(TAG,sendeid);
                             SendDownloadSlack(downloadname);
                         }
                         break;
@@ -804,22 +819,29 @@ public class DtnService extends DTNIntentService {
     //受け取ったファイル名を取得
     public String GetdownloadFilename(File f){
         int leng = f.getAbsolutePath().length();
-        int fnumber = f.getAbsolutePath().lastIndexOf("/")+1;
-        int flen = leng - fnumber;
-        char[] fnamearray = f.getAbsolutePath().toCharArray();
-        char[] fnamechar = new char[flen];
-        for(int i=0;fnumber < leng;fnumber++,i++){
-            fnamechar[i] = fnamearray[fnumber];
+        int fnumber = f.getAbsolutePath().lastIndexOf("/ShareBox/")+1+9;
+        String fname = f.getAbsolutePath().substring(fnumber,leng);
+        //Log.d(TAG,"ファイル名 " + fname);
+        return fname;
+    }
+
+
+    //ダウンロードしたファイルのソースが"送った人のeid"+"/sharebox"になっているためそのソースから/shareboxを消す
+    public String GetSendEID(String shareeid){
+        String eid;
+        if(shareeid.startsWith("ipn:")){
+            eid = shareeid.substring(0,shareeid.lastIndexOf(".4066896964"));
+        }else {
+            eid = shareeid.substring(0, shareeid.lastIndexOf("/sharebox"));
         }
-        String fnamestring = String.valueOf(fnamechar);
-        Log.d(TAG,"ファイル名" + fnamestring);
-        return fnamestring;
+        return eid;
     }
 
     //ファイルを受け取ったことをslackで通知を送る
     public void SendDownloadSlack(String filename){
         Log.d(TAG,"slackに通知");
-        String name = "namae";
-        String message = name + "が" + filename + "を受け取りました";
+        String message = filename + "を受け取りました";
+        SendSlackMessage ssm = new SendSlackMessage(null,myid,message,sendeid,myeid);
+        ssm.execute(1);
     }
 }
