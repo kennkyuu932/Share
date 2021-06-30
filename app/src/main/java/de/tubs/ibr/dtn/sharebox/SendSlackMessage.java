@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import de.tubs.ibr.dtn.sharebox.data.EIDDao;
-import de.tubs.ibr.dtn.sharebox.data.EIDDao_Impl;
 import de.tubs.ibr.dtn.sharebox.data.EIDDatabase;
 import de.tubs.ibr.dtn.sharebox.data.EIDEntity;
 import de.tubs.ibr.dtn.sharebox.ui.DestinationRecycleViewAdapter;
