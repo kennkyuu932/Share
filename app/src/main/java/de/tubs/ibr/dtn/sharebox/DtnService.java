@@ -800,7 +800,7 @@ public class DtnService extends DTNIntentService {
                             String downloadname = GetdownloadFilename(f);
                             sendeid = GetSendEID(mBundleId.getSource().toString());
                             senddao = GetDao();
-                            myeid = GetMyEID(senddao);
+                            myeid = getClientEndpoint();
                             SendDownloadSlack(downloadname);
                         }
                         break;
@@ -840,15 +840,6 @@ public class DtnService extends DTNIntentService {
         }
         return eid;
     }
-
-    //自分のEIDを取得
-    public String GetMyEID(EIDDao myDao){
-        String testEid = "dtn://android-7c78181e.dtn";
-        String eid = testEid;
-        Log.d(TAG,"$$ myeid:" + eid + " $$");
-        return eid;
-    }
-
 
     //SelectDestinationActivityにおけるdaoを取得
     public EIDDao GetDao(){

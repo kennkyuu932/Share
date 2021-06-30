@@ -148,6 +148,13 @@ public class SelectDestinationActivity extends Activity {
         super.onDestroy();
         db.close();
     }
+    protected String GetHintEilename(){
+        String sharefilename = enterfilename.getText().toString();
+        if(sharefilename.isEmpty()){
+            sharefilename = enterfilename.getHint().toString();
+        }
+        return sharefilename;
+    }
 
     class AsyncTasks extends AsyncTask<Integer, Integer, Integer> {
 
