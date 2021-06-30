@@ -29,7 +29,7 @@ import de.tubs.ibr.dtn.sharebox.ui.DestinationRowData;
 public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     final String TAG = "SendSlackMessage";
     //githubにアップロード時に削除
-    final String SLACK_APP_TOKEN = "xoxb-1994031519219-2200508227074-VKvTWnR6OZKHTpBstMnCVhEq";
+    final String SLACK_APP_TOKEN = "";
 
     final int ASYNC_GET_ALL = 1;
     final int ASYNC_DELETE_ALL = 2;
