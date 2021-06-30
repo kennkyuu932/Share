@@ -5,10 +5,18 @@ DTNFileShareのプロジェクト
 
 SelectDestinationActivity.javaのSLACK_BOT_TOKENは認証トークンを公開するとslackがそれを無効化してしまうため""にしている
 
-変更 
-20210629
+## 変更 
+
+#### 20210629
+
 Slackに受信したことを通知するためのSendSlackActivityを追加.
 ファイルを送った人のEID,ファイル名は取得できた.
 あとSelectDestinationActivityにおけるEIDDao型のdao,自分のEID,slackのidを取得するコードを追加する予定
 SendSlackMessageによって送信時にSlackに通知が送られなくなってしまったため直さないといけない.
 SelectDestinationActivityで送信時にSlackに通知を送っているためSendSlackMessageにまとめる予定.
+
+#### 20210630
+
+現在は自分のEIDを取得するメソッドにVAIOのEIDを書いている
+ファイル受け取り時に自分のEIDを取得できればダウンロード通知はできる
+SendSlackMessageでSlackAPIを用いてメッセージを送る工程をConversationOpenというメソッドとした
