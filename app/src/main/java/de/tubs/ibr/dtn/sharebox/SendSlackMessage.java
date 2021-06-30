@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import de.tubs.ibr.dtn.sharebox.data.EIDDao;
 import de.tubs.ibr.dtn.sharebox.data.EIDDao_Impl;
@@ -28,40 +29,107 @@ import de.tubs.ibr.dtn.sharebox.ui.DestinationRowData;
 public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     final String TAG = "SendSlackMessage";
     //githubにアップロード時に削除
-    final String SLACK_APP_TOKEN = "";
+    final String SLACK_APP_TOKEN = "xoxb-1994031519219-2200508227074-VKvTWnR6OZKHTpBstMnCVhEq";
 
+    final int ASYNC_GET_ALL = 1;
+    final int ASYNC_DELETE_ALL = 2;
+    final int ASYNC_POST3 = 3;
+    final int ASYNC_POST4 = 4;
+
+
+    List<EIDEntity> dbList;
+
+    EIDDatabase db;
     EIDDao dao;
     String id;
+    String eid;
+    CountDownLatch countDownLatch;
     String sendeid;
     String myeid;
     String message;
 
 
-    public SendSlackMessage(EIDDao dao, String destinationId, String message, String sendeid,String myeid){
+
+    public SendSlackMessage(EIDDatabase db, EIDDao dao, List<EIDEntity> dbList){
+        // deleteAll
+        super();
+        this.db = db;
+        this.dao = dao;
+        this.dbList = dbList;
+    }
+    public SendSlackMessage(EIDDatabase db, EIDDao dao, CountDownLatch countDownLatch, List<EIDEntity> dbList){
+        // getAll
+        super();
+        this.db = db;
+        this.dao = dao;
+        this.countDownLatch = countDownLatch;
+        this.dbList = dbList;
+    }
+    /*
+    変数の説明
+    dao:eidからslackのユーザーネーム,idを取得するため必要
+    sendslackid:メッセージを送る相手に対してslackapiのconversation.openを使うために必要
+    message:受け取ったファイル名を送信メッセージに追加するため
+    sendeid:ファイルを送ってきた相手のEID,daoを用いて誰が送ってきたかを識別する
+    myeid:自分のEID,自分が受け取ったことを伝えるため自分の名前を取得する
+    */
+    public SendSlackMessage(EIDDao dao, String message, String sendeid,String myeid){
+        //ファイルを受け取ったことを通知する(POST4)
         super();
         Log.d(TAG,"コンストラクタ");
         this.dao = dao;
-        this.id = destinationId;
         this.message = message;
         this.sendeid = sendeid;
         this.myeid = myeid;
     }
 
+    public SendSlackMessage(EIDDatabase db, EIDDao dao, String destinationId, String eid, String message){
+        // ファイルを送信したことを通知する (POST3)
+        super();
+        this.db = db;
+        this.dao = dao;
+        this.id = destinationId;
+        this.eid = eid;
+        this.message = message;
+    }
+
     @Override
     protected Integer doInBackground(Integer... integers) {
         Log.d(TAG,"doInBackground");
-        Log.d(TAG,message);
 
+        switch (integers[0]) {
+            case ASYNC_DELETE_ALL:
+                dao.deleteAll();
+                dbList = dao.getAll();
+                Log.d(TAG, "DB:deleteAll");
+                return ASYNC_DELETE_ALL;
+            case ASYNC_GET_ALL:
+                dbList = dao.getAll();
+                Log.d(TAG, "DB:getAll");
+                countDownLatch.countDown();
+                return ASYNC_GET_ALL;
 
-        /*
-        String name = dao.searchFromEid(myeid).slackUseName;
+            case ASYNC_POST3:
+                String name = dao.searchFromEid(eid).slackUseName;
 
+                break;
+            case ASYNC_POST4:
+                String myname = dao.searchFromEid(myeid).slackUseName;
+                String sendslackid = dao.searchFromEid(sendeid).slackUserId;
 
+                ConversationOpen(sendslackid, myname);
+                break;
+        }
+
+        return null;
+    }
+
+    protected void ConversationOpen(String senduserid,String name){
         Log.d(TAG,"conversationsopen");
         // get ID of channel between destination and DTN app
         String result = post("https://slack.com/api/conversations.open",
                 "token=" + SLACK_APP_TOKEN +
-                        "&users=" + id);
+                        "&users=" + senduserid);
 
         // send message for Slack api
         String channelId = "";
@@ -78,11 +146,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
                 "token=" + SLACK_APP_TOKEN +
                         "&channel=" + channelId +
                         "&text=" + convertToOiginal(name) + "が" + message);
-        Log.d(TAG,"#########");
-        Log.d(TAG, result);
-        Log.d(TAG,"#########");
-        */
-        return null;
+        Log.d(TAG, "## " + result + " ##");
     }
 
     protected String post(String strUrl, String param){

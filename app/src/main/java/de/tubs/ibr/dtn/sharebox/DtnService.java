@@ -12,6 +12,7 @@ import java.util.List;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,6 +48,8 @@ import de.tubs.ibr.dtn.api.TransferMode;
 import de.tubs.ibr.dtn.sharebox.data.Database;
 import de.tubs.ibr.dtn.sharebox.data.Download;
 import de.tubs.ibr.dtn.sharebox.data.Download.State;
+import de.tubs.ibr.dtn.sharebox.data.EIDDao;
+import de.tubs.ibr.dtn.sharebox.data.EIDDatabase;
 import de.tubs.ibr.dtn.sharebox.data.PackageFile;
 import de.tubs.ibr.dtn.sharebox.data.TruncatedInputStream;
 import de.tubs.ibr.dtn.sharebox.data.Utils;
@@ -108,9 +111,9 @@ public class DtnService extends DTNIntentService {
     private ServiceError mServiceError = ServiceError.NO_ERROR;
 
     //slackにメッセージを送るための変数を宣言
-    private String myid = null;
     private String myeid = null;
     private String sendeid = null;
+    private EIDDao senddao = null;
 
     
     // the database
@@ -796,7 +799,8 @@ public class DtnService extends DTNIntentService {
                             //Slackで受信の通知を送るための変数を取得
                             String downloadname = GetdownloadFilename(f);
                             sendeid = GetSendEID(mBundleId.getSource().toString());
-                            //Log.d(TAG,sendeid);
+                            senddao = GetDao();
+                            myeid = GetMyEID(senddao);
                             SendDownloadSlack(downloadname);
                         }
                         break;
@@ -837,11 +841,27 @@ public class DtnService extends DTNIntentService {
         return eid;
     }
 
+    //自分のEIDを取得
+    public String GetMyEID(EIDDao mydao){
+        String eid = "dtn://android-7c78181e.dtn";
+        Log.d(TAG,"$$ myeid:" + eid + " $$");
+        return eid;
+    }
+
+
+    //SelectDestinationActivityにおけるdaoを取得
+    public EIDDao GetDao(){
+        EIDDatabase db;
+        db = Room.databaseBuilder(getApplicationContext(),EIDDatabase.class,"eid-database").build();
+        EIDDao dao1 = db.eiddao();
+        Log.d(TAG,"&& dao:" + dao1 + " &&");
+        return dao1;
+    }
+
     //ファイルを受け取ったことをslackで通知を送る
     public void SendDownloadSlack(String filename){
         Log.d(TAG,"slackに通知");
         String message = filename + "を受け取りました";
-        SendSlackMessage ssm = new SendSlackMessage(null,myid,message,sendeid,myeid);
-        ssm.execute(1);
+        new SendSlackMessage(senddao,message,sendeid,myeid).execute(4);
     }
 }
