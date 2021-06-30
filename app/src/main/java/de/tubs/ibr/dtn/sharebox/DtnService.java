@@ -831,19 +831,20 @@ public class DtnService extends DTNIntentService {
 
 
     //ダウンロードしたファイルのソースが"送った人のeid"+"/sharebox"になっているためそのソースから/shareboxを消す
-    public String GetSendEID(String shareeid){
+    public String GetSendEID(String shareEid){
         String eid;
-        if(shareeid.startsWith("ipn:")){
-            eid = shareeid.substring(0,shareeid.lastIndexOf(".4066896964"));
+        if(shareEid.startsWith("ipn:")){
+            eid = shareEid.substring(0,shareEid.lastIndexOf(".4066896964"));
         }else {
-            eid = shareeid.substring(0, shareeid.lastIndexOf("/sharebox"));
+            eid = shareEid.substring(0, shareEid.lastIndexOf("/sharebox"));
         }
         return eid;
     }
 
     //自分のEIDを取得
-    public String GetMyEID(EIDDao mydao){
-        String eid = "dtn://android-7c78181e.dtn";
+    public String GetMyEID(EIDDao myDao){
+        String testEid = "dtn://android-7c78181e.dtn";
+        String eid = testEid;
         Log.d(TAG,"$$ myeid:" + eid + " $$");
         return eid;
     }
