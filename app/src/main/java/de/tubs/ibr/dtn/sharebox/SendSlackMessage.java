@@ -32,8 +32,8 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
 
     final int ASYNC_GET_ALL = 1;
     final int ASYNC_DELETE_ALL = 2;
-    final int ASYNC_POST3 = 3;
-    final int ASYNC_POST4 = 4;
+    final int ASYNC_POST_SEND = 3;
+    final int ASYNC_POST_DOWNLOAD = 4;
 
 
     List<EIDEntity> dbList;
@@ -75,7 +75,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     public SendSlackMessage(EIDDao dao, String message, String sendeid,String myeid){
         //ファイルを受け取ったことを通知する(POST4)
         super();
-        Log.d(TAG,"コンストラクタ");
+        Log.d(TAG,"受信コンストラクタ");
         this.dao = dao;
         this.message = message;
         this.sendeid = sendeid;
@@ -85,6 +85,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     public SendSlackMessage(EIDDatabase db, EIDDao dao, String destinationId, String eid, String message){
         // ファイルを送信したことを通知する (POST3)
         super();
+        Log.d(TAG,"送信コンストラクタ");
         this.db = db;
         this.dao = dao;
         this.id = destinationId;
@@ -108,11 +109,12 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
                 countDownLatch.countDown();
                 return ASYNC_GET_ALL;
 
-            case ASYNC_POST3:
-                String name = dao.searchFromEid(eid).slackUseName;
+            case ASYNC_POST_SEND:
+                String sendname = dao.searchFromEid(eid).slackUseName;
 
+                ConversationOpen(id,sendname);
                 break;
-            case ASYNC_POST4:
+            case ASYNC_POST_DOWNLOAD:
                 String myname = dao.searchFromEid(myeid).slackUseName;
                 String sendslackid = dao.searchFromEid(sendeid).slackUserId;
 

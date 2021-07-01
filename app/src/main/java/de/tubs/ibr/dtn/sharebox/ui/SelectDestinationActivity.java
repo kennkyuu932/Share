@@ -36,6 +36,7 @@ import de.tubs.ibr.dtn.api.Node;
 import de.tubs.ibr.dtn.api.SingletonEndpoint;
 import de.tubs.ibr.dtn.sharebox.DtnService;
 import de.tubs.ibr.dtn.sharebox.R;
+import de.tubs.ibr.dtn.sharebox.SendSlackMessage;
 import de.tubs.ibr.dtn.sharebox.data.EIDDao;
 import de.tubs.ibr.dtn.sharebox.data.EIDDatabase;
 import de.tubs.ibr.dtn.sharebox.data.EIDEntity;
@@ -60,8 +61,6 @@ public class SelectDestinationActivity extends Activity {
     final int ASYNC_GET_ALL = 1;
     final int ASYNC_DELETE_ALL = 2;
     final int ASYNC_POST = 3;
-    //githubにアップロードする際にslack側で認証トークンが自動的に無効化されるためTOKENの中身を削除
-    final String SLACK_APP_TOKEN = "";
 
     private EditText enterfilename;
 
@@ -115,7 +114,9 @@ public class SelectDestinationActivity extends Activity {
 
                 String id = list.get(position).getUserId();
                 // Send message in channel 'DTN app'
-                new AsyncTasks(db, dao, id, getIntent().getStringExtra("eid")).execute(ASYNC_POST);
+                //SendSlackMessageクラスでSlackでメッセージを送る
+                String message = GetHintFilename() + "を渡したいらしい";
+                new SendSlackMessage(db, dao, id, getIntent().getStringExtra("eid"),message).execute(ASYNC_POST);
 
                 finish();
             }
@@ -148,7 +149,7 @@ public class SelectDestinationActivity extends Activity {
         super.onDestroy();
         db.close();
     }
-    protected String GetHintEilename(){
+    protected String GetHintFilename(){
         String sharefilename = enterfilename.getText().toString();
         if(sharefilename.isEmpty()){
             sharefilename = enterfilename.getHint().toString();
@@ -177,6 +178,7 @@ public class SelectDestinationActivity extends Activity {
             this.dao = dao;
             this.countDownLatch = countDownLatch;
         }
+        /*
         public AsyncTasks(EIDDatabase db, EIDDao dao, String destinationId, String eid){
             // POST
             super();
@@ -185,6 +187,8 @@ public class SelectDestinationActivity extends Activity {
             this.id = destinationId;
             this.eid = eid;
         }
+
+         */
 
         @Override
         protected Integer doInBackground(Integer... integers) {
@@ -199,6 +203,7 @@ public class SelectDestinationActivity extends Activity {
                     Log.d(TAG, "DB:getAll");
                     countDownLatch.countDown();
                     return ASYNC_GET_ALL;
+                /*
                 case ASYNC_POST:
                     String name = dao.searchFromEid(eid).slackUseName;
                     String sharefilename = enterfilename.getText().toString();
@@ -232,6 +237,8 @@ public class SelectDestinationActivity extends Activity {
                     return ASYNC_POST;
                 default:
                     break;
+
+                 */
             }
             return null;
         }
@@ -247,6 +254,8 @@ public class SelectDestinationActivity extends Activity {
             Log.d(TAG, "Finish async task!");
         }
 
+
+        /*
         protected String post(String strUrl, String param){
             final int TIMEOUT_MILLIS = 0;
             final StringBuffer sb = new StringBuffer("");
@@ -301,6 +310,7 @@ public class SelectDestinationActivity extends Activity {
 
             return sb.toString();
         }
+        */
     }
 
     private List<DestinationRowData> createData(List<EIDEntity> dbList) {
@@ -317,6 +327,7 @@ public class SelectDestinationActivity extends Activity {
         }
         return dataset;
     }
+
 
     private static String convertToOiginal(String unicode) {
         String[] codeStrs = unicode.split("\\\\u");
