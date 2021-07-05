@@ -26,6 +26,7 @@ import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
 import android.preference.PreferenceManager;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.util.Log;
 
 import de.tubs.ibr.dtn.SecurityService;
@@ -530,9 +531,6 @@ public class DtnService extends DTNIntentService {
         super.onCreate();
         Log.d(TAG,"onCreate");
 
-        //Slackにメッセージを送るために必要な変数を取得
-
-
 
         // create notification factory
         mNotificationFactory = new NotificationFactory( this, (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE) );
@@ -796,11 +794,18 @@ public class DtnService extends DTNIntentService {
                             Log.d(TAG, "Extracted file: " + f.getAbsolutePath());
                             mDatabase.put(mBundleId, f);
 
+                            //送信されたバンドルにルート経由記録がないか調べる
+                            //String bundlechase;
+
+                            //bundlechase = ;
+
+                            //Log.d(TAG,"== " + bundlechase + " ==");
+
                             //Slackで受信の通知を送るための変数を取得
                             String downloadname = GetdownloadFilename(f);
-                            sendeid = GetSendEID(mBundleId.getSource().toString());
+                            sendeid = GetEID(mBundleId.getSource().toString());
                             senddao = GetDao();
-                            myeid = getClientEndpoint();
+                            myeid = GetEID(mBundle.getDestination().toString());
                             SendDownloadSlack(downloadname);
                         }
                         break;
@@ -831,7 +836,7 @@ public class DtnService extends DTNIntentService {
 
 
     //ダウンロードしたファイルのソースが"送った人のeid"+"/sharebox"になっているためそのソースから/shareboxを消す
-    public String GetSendEID(String shareEid){
+    public String GetEID(String shareEid){
         String eid;
         if(shareEid.startsWith("ipn:")){
             eid = shareEid.substring(0,shareEid.lastIndexOf(".4066896964"));
@@ -846,13 +851,12 @@ public class DtnService extends DTNIntentService {
         EIDDatabase db;
         db = Room.databaseBuilder(getApplicationContext(),EIDDatabase.class,"eid-database").build();
         EIDDao dao1 = db.eiddao();
-        Log.d(TAG,"&& dao:" + dao1 + " &&");
         return dao1;
     }
 
     //ファイルを受け取ったことをslackで通知を送る
     public void SendDownloadSlack(String filename){
-        Log.d(TAG,"slackに通知");
+        //Log.d(TAG,"slackに通知");
         String message = filename + "を受け取りました";
         new SendSlackMessage(senddao,message,sendeid,myeid).execute(4);
     }

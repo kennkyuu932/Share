@@ -30,25 +30,25 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     //githubにアップロード時に削除
     final String SLACK_APP_TOKEN = "";
 
-    final int ASYNC_GET_ALL = 1;
-    final int ASYNC_DELETE_ALL = 2;
+    // final int ASYNC_GET_ALL = 1;
+    // final int ASYNC_DELETE_ALL = 2;
     final int ASYNC_POST_SEND = 3;
     final int ASYNC_POST_DOWNLOAD = 4;
 
 
-    List<EIDEntity> dbList;
+    // List<EIDEntity> dbList;
 
     EIDDatabase db;
     EIDDao dao;
     String id;
     String eid;
-    CountDownLatch countDownLatch;
+    // CountDownLatch countDownLatch;
     String sendeid;
     String myeid;
     String message;
 
 
-
+/*
     public SendSlackMessage(EIDDatabase db, EIDDao dao, List<EIDEntity> dbList){
         // deleteAll
         super();
@@ -64,6 +64,8 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
         this.countDownLatch = countDownLatch;
         this.dbList = dbList;
     }
+
+ */
     /*
     変数の説明
     dao:eidからslackのユーザーネーム,idを取得するため必要
@@ -75,7 +77,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     public SendSlackMessage(EIDDao dao, String message, String sendeid,String myeid){
         //ファイルを受け取ったことを通知する(POST4)
         super();
-        Log.d(TAG,"受信コンストラクタ");
+        //Log.d(TAG,"受信コンストラクタ");
         this.dao = dao;
         this.message = message;
         this.sendeid = sendeid;
@@ -85,7 +87,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     public SendSlackMessage(EIDDatabase db, EIDDao dao, String destinationId, String eid, String message){
         // ファイルを送信したことを通知する (POST3)
         super();
-        Log.d(TAG,"送信コンストラクタ");
+        //Log.d(TAG,"送信コンストラクタ");
         this.db = db;
         this.dao = dao;
         this.id = destinationId;
@@ -98,6 +100,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
         Log.d(TAG,"doInBackground");
 
         switch (integers[0]) {
+            /*
             case ASYNC_DELETE_ALL:
                 dao.deleteAll();
                 dbList = dao.getAll();
@@ -109,6 +112,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
                 countDownLatch.countDown();
                 return ASYNC_GET_ALL;
 
+             */
             case ASYNC_POST_SEND:
                 String sendname = dao.searchFromEid(eid).slackUseName;
 
@@ -126,7 +130,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     }
 
     protected void ConversationOpen(String senduserid,String name){
-        Log.d(TAG,"conversationsopen");
+        //Log.d(TAG,"conversationsopen");
         // get ID of channel between destination and DTN app
         String result = post("https://slack.com/api/conversations.open",
                 "token=" + SLACK_APP_TOKEN +
@@ -134,7 +138,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
 
         // send message for Slack api
         String channelId = "";
-        Log.d(TAG,"channelIdtrycatch");
+        //Log.d(TAG,"channelIdtrycatch");
         try {
             ObjectMapper mapper = new ObjectMapper();
             //convert JSON string to Map
@@ -142,12 +146,12 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG,"postmessage");
+        //Log.d(TAG,"postmessage");
         result = post("https://slack.com/api/chat.postMessage",
                 "token=" + SLACK_APP_TOKEN +
                         "&channel=" + channelId +
                         "&text=" + convertToOiginal(name) + "が" + message);
-        Log.d(TAG, "## " + result + " ##");
+        //Log.d(TAG, "## " + result + " ##");
     }
 
     protected String post(String strUrl, String param){
