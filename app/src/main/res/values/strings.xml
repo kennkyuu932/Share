@@ -42,6 +42,7 @@
     <string name="select_destination_menu_delete" translatable="false">ユーザリスト削除</string>
     <string name="share_file_name" translatable="false">Enter File Name</string>
     <string name="setting_file_name" translatable="false">送信ファイル名の設定</string>
+    <string name="userlist_view">ユーザーリスト表示</string>
 
     <plurals name="listitem_multi_subtitle">
         <item quantity="one">%d item selected</item>

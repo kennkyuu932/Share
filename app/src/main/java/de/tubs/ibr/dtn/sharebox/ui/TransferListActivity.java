@@ -38,6 +38,14 @@ public class TransferListActivity extends FragmentActivity {
                 startActivity(i);
                 return true;
             }
+            case R.id.userlist_view:
+            {
+                //Launch SelectDestinationActivity
+                Intent u = new Intent(this,SelectDestinationActivity.class);
+                Log.d(TAG,"userlist view to SelectDestinationActivity");
+                u.putExtra("fnameHint", "ファイルの選択がされていません");
+                startActivity(u);
+            }
         }
         return super.onMenuItemSelected(featureId, item);
     }

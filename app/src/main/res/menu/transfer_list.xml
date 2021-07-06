@@ -7,4 +7,10 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_menu_settings" />
 
+    <item
+        android:id="@+id/userlist_view"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/userlist_view"
+        android:icon="@drawable/ic_menu_settings" />
 </menu>
