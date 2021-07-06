@@ -29,3 +29,7 @@ SendSlackMessageでSlackAPIを用いてメッセージを送る工程をConversa
 
 #### 20210705
 細かい修正
+
+#### 20210706
+アプリ起動時の画面からアプリに登録されているユーザーリストを表示することができるようにした
+(メニュータブからSelectDestinationActivityで表示される画面を呼び出す)
