@@ -67,7 +67,7 @@ public class DtnService extends DTNIntentService {
     // process a status report
     public static final String REPORT_DELIVERED_INTENT = "de.tubs.ibr.dtn.sharebox.REPORT_DELIVERED";
     
-    // download or rejet a bundle
+    // download or reject a bundle
     public static final String ACCEPT_DOWNLOAD_INTENT = "de.tubs.ibr.dtn.sharebox.ACCEPT_DOWNLOAD";
     public static final String REJECT_DOWNLOAD_INTENT = "de.tubs.ibr.dtn.sharebox.REJECT_DOWNLOAD";
 
@@ -115,6 +115,9 @@ public class DtnService extends DTNIntentService {
     private String myeid = null;
     private String sendeid = null;
     private EIDDao senddao = null;
+    //Slack通知の外部出力用(検証用)
+    private String bunid = null;
+    //
 
     
     // the database
@@ -201,6 +204,7 @@ public class DtnService extends DTNIntentService {
         
         if (de.tubs.ibr.dtn.Intent.RECEIVE.equals(action))
         {
+            Log.d(TAG,"DtnReceiver to DtnService intent");
             // Receive bundle info from the DTN service here
             try {
                 // We loop here until no more bundles are available
@@ -354,6 +358,19 @@ public class DtnService extends DTNIntentService {
                 Bundle b = new Bundle();
                 b.setDestination(destination);
                 b.setLifetime(intent.getLongExtra(EXTRA_KEY_LIFETIME, lifetimeDefault));
+
+
+                /*
+                SingletonEndpoint report = new SingletonEndpoint(destination.toString());
+                Log.d(TAG,"\\ " + report.toString() + " \\");
+                b.setReportto(report);
+                */
+
+                /* SingletonEndpointで指定されたEIDを中継するように設定する
+                SingletonEndpoint naka = new SingletonEndpoint("dtn://android-11.dtn");
+                b.setCustodian(naka);
+                Log.d(TAG,"set custodian " + naka);
+                 */
 
                 // enable signature if requested
                 b.set(Bundle.ProcFlags.DTNSEC_REQUEST_SIGN, prefs.getBoolean("upload_sign", true));
@@ -629,6 +646,10 @@ public class DtnService extends DTNIntentService {
                 long len = 0L;
                 
                 if (mBlocks != null) {
+                    //Block test;
+                    //test = mBlocks.getFirst();
+                    //String m = test.getClass().toString();
+                    //Log.d(TAG,"<<< " + m + " >>>");
                     for (Block b : mBlocks) {
                         if (b.type == 1) {
                             len += b.length;
@@ -689,7 +710,7 @@ public class DtnService extends DTNIntentService {
                         ParcelFileDescriptor[] p = ParcelFileDescriptor.createPipe();
                         mReadFd = p[0];
                         mWriteFd = p[1];
-                        
+
                         InputStream is = new TruncatedInputStream(new FileInputStream(mReadFd.getFileDescriptor()), block.length);
                         
                         // create a new tar extractor
@@ -795,17 +816,22 @@ public class DtnService extends DTNIntentService {
                             mDatabase.put(mBundleId, f);
 
                             //送信されたバンドルにルート経由記録がないか調べる
-                            //String bundlechase;
+                            /*
+                            String bundlechase;
 
-                            //bundlechase = ;
+                            bundlechase = mBundle.getReportto().toString();
 
-                            //Log.d(TAG,"== " + bundlechase + " ==");
+                            Log.d(TAG,"== " + bundlechase + " ==");
+
+                             */
 
                             //Slackで受信の通知を送るための変数を取得
                             String downloadname = GetdownloadFilename(f);
                             sendeid = GetEID(mBundleId.getSource().toString());
                             senddao = GetDao();
                             myeid = GetEID(mBundle.getDestination().toString());
+                            //Slack通知外部出力(検証用)
+                            bunid=GetBunid(mBundleId.toString());
                             SendDownloadSlack(downloadname);
                         }
                         break;
@@ -858,6 +884,12 @@ public class DtnService extends DTNIntentService {
     public void SendDownloadSlack(String filename){
         //Log.d(TAG,"slackに通知");
         String message = filename + "を受け取りました";
-        new SendSlackMessage(senddao,message,sendeid,myeid).execute(4);
+        new SendSlackMessage(senddao,message,sendeid,myeid,bunid).execute(4);
+    }
+
+    //取得したbundleidを加工(付加されている送信元を削除)
+    public String GetBunid(String BundleId){
+        String bunid_after=BundleId.substring(0,BundleId.indexOf("dtn://"));
+        return bunid_after;
     }
 }

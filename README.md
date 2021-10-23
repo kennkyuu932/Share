@@ -3,7 +3,15 @@
 
 DTNFileShareのプロジェクト
 
-SelectDestinationActivity.javaのSLACK_BOT_TOKENは認証トークンを公開するとslackがそれを無効化してしまうため""にしている
+SendSlackMessaage.javaのSLACK_BOT_TOKENは認証トークンを公開するとslackがそれを無効化してしまうため""にしている
+
+## 使い方
+
+/app/scr/main/java/de/tub/ibr/dtn/sharebox/SendSlackMessage.javaの変数SLACK_APP_TOKENに作成したSlack appのBot User OAuth Token の文字列を入力
+
+/app/scr/main/java/de/tub/ibr/dtn/sharebox/SendSlackMessage.javaの変数SLACK_APP_URLにglitch等で作成したサーバーのURLを入力
+
+/app/scr/main/java/de/tub/ibr/dtn/sharebox/RegisterEIDActivity.javaの変数SLACK_APP_URLにglitch等で作成したサーバーのURLを入力
 
 ## 変更 
 
@@ -34,3 +42,8 @@ SendSlackMessageでSlackAPIを用いてメッセージを送る工程をConversa
 アプリ起動時の画面からアプリに登録されているユーザーリストを表示することができるようにした
 
 (メニュータブからSelectDestinationActivityで表示される画面を呼び出す)
+
+#### 20211023
+通知を行うファイル共有の通信性能評価を行うためにSlackのWeb APIを呼び出したときにその情報を外部ファイルに保存できるようにした
+
+READMEにこのアプリの使い方を記述

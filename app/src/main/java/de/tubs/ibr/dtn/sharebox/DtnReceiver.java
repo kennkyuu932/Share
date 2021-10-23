@@ -19,6 +19,7 @@ public class DtnReceiver extends BroadcastReceiver {
             // wake-up the local PingService to received the bundle.
             Intent i = new Intent(context, DtnService.class);
             i.setAction(de.tubs.ibr.dtn.Intent.RECEIVE);
+            Log.d(TAG,"IntentactionReceive");
             context.startService(i);
         }
         else if (action.equals(de.tubs.ibr.dtn.Intent.STATUS_REPORT))
@@ -29,6 +30,7 @@ public class DtnReceiver extends BroadcastReceiver {
             i.setAction(DtnService.REPORT_DELIVERED_INTENT);
             i.putExtra("source", intent.getParcelableExtra("source"));
             i.putExtra("bundleid", intent.getParcelableExtra("bundleid"));
+            Log.d(TAG,"IntentAtatusReport");
             context.startService(i);
         }
         else if (action.equals(de.tubs.ibr.dtn.Intent.STATE))
@@ -38,6 +40,7 @@ public class DtnReceiver extends BroadcastReceiver {
                 // trigger session registration
                 Intent i = new Intent(context, DtnService.class);
                 i.setAction(de.tubs.ibr.dtn.Intent.RECEIVE);
+                Log.d(TAG,"IntentState");
                 context.startService(i);
             }
         }

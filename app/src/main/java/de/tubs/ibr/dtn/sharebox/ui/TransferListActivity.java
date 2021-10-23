@@ -40,7 +40,7 @@ public class TransferListActivity extends FragmentActivity {
             }
             case R.id.userlist_view:
             {
-                //Launch SelectDestinationActivity
+                //Launch SelectDestinationActivity ユーザーリストの表示
                 Intent u = new Intent(this,SelectDestinationActivity.class);
                 Log.d(TAG,"userlist view to SelectDestinationActivity");
                 u.putExtra("fnameHint", "ファイルの選択がされていません");

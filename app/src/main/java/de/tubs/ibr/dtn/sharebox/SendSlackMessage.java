@@ -35,6 +35,12 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     final int ASYNC_POST_SEND = 3;
     final int ASYNC_POST_DOWNLOAD = 4;
 
+    //Slack通知外部出力(検証用)
+    final String SLACK_APP_URL = "https://slack-dtn-test.glitch.me";
+    int noticeflag = 0;
+    String bunid = null;
+    //
+
 
     // List<EIDEntity> dbList;
 
@@ -74,7 +80,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
     sendeid:ファイルを送ってきた相手のEID,daoを用いて誰が送ってきたかを識別する
     myeid:自分のEID,自分が受け取ったことを伝えるため自分の名前を取得する
     */
-    public SendSlackMessage(EIDDao dao, String message, String sendeid,String myeid){
+    public SendSlackMessage(EIDDao dao, String message, String sendeid,String myeid,String bunid){
         //ファイルを受け取ったことを通知する(POST4)
         super();
         //Log.d(TAG,"受信コンストラクタ");
@@ -82,6 +88,8 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
         this.message = message;
         this.sendeid = sendeid;
         this.myeid = myeid;
+        //Slack(検証用)
+        this.bunid = bunid;
     }
 
     public SendSlackMessage(EIDDatabase db, EIDDao dao, String destinationId, String eid, String message){
@@ -115,13 +123,18 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
              */
             case ASYNC_POST_SEND:
                 String sendname = dao.searchFromEid(eid).slackUseName;
-
+                //(検証用)
+                noticeflag=ASYNC_POST_SEND;
+                //
                 ConversationOpen(id,sendname);
                 break;
             case ASYNC_POST_DOWNLOAD:
                 String myname = dao.searchFromEid(myeid).slackUseName;
                 String sendslackid = dao.searchFromEid(sendeid).slackUserId;
 
+                //(検証用)
+                noticeflag=ASYNC_POST_DOWNLOAD;
+                //
                 ConversationOpen(sendslackid, myname);
                 break;
         }
@@ -152,6 +165,7 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
                         "&channel=" + channelId +
                         "&text=" + convertToOiginal(name) + "が" + message);
         //Log.d(TAG, "## " + result + " ##");
+        String result2 = post2(noticeflag);
     }
 
     protected String post(String strUrl, String param){
@@ -196,6 +210,9 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
 
         } catch (Exception e) {
             Log.e(TAG, e.getClass().toString());
+            //(検証用)
+            noticeflag=0;
+            //
             e.printStackTrace();
         } finally {
             //countDownLatch.countDown();
@@ -208,6 +225,87 @@ public class SendSlackMessage extends AsyncTask<Integer,Integer,Integer> {
 
         return sb.toString();
     }
+
+    //Slack通知の時間を外部出力(検証用)
+    protected String post2(int noticeflag){
+        final int TIMEOUT_MILLIS = 0;
+        final StringBuffer sb = new StringBuffer("");
+
+        HttpURLConnection httpConn = null;
+        BufferedReader br = null;
+        InputStream is = null;
+        InputStreamReader isr = null;
+
+        try {
+            URL url = new URL(SLACK_APP_URL + "/notice");
+            httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setConnectTimeout(TIMEOUT_MILLIS);
+            httpConn.setReadTimeout(TIMEOUT_MILLIS);
+            httpConn.setRequestMethod("POST");
+            httpConn.setUseCaches(false);
+            httpConn.setDoOutput(true);
+            httpConn.setDoInput(true);
+
+            OutputStream os = httpConn.getOutputStream();
+            final boolean autoFlash = true;
+            PrintStream ps = new PrintStream(os, autoFlash, "UTF-8");
+            switch (noticeflag) {
+                case ASYNC_POST_SEND:
+                    /*
+                    送信通知の外部出力(sendがreceiveに対してbunidのバンドルを送った)
+                    bunid:送ったバンドルのid
+                     */
+                    ps.print("send=" + eid +
+                            "&receive=" + id +
+                            "&message=" + message +
+                            "&noticeflag=" + noticeflag);
+                    ps.close();
+                    break;
+                case ASYNC_POST_DOWNLOAD:
+                    /*
+                    送信通知の外部出力(sendがreceiveに対してbunidのバンドルを受け取った)
+                    bunid:受け取ったバンドルのid
+                     */
+                    ps.print("send=" + sendeid +
+                            "&receive=" + myeid +
+                            "&bunid=" + bunid +
+                            "&noticeflag=" + noticeflag);
+                    ps.close();
+                    break;
+            }
+
+
+            final int responseCode = httpConn.getResponseCode();
+            Log.d(TAG, "responseCode: " + responseCode);
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                Log.d(TAG, "HTTP OK!!");
+                is = httpConn.getInputStream();
+                isr = new InputStreamReader(is, "UTF-8");
+                br = new BufferedReader(isr);
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+            } else {
+                // If responseCode is not HTTP_OK
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, e.getClass().toString());
+            e.printStackTrace();
+        } finally {
+            //countDownLatch.countDown();
+            if (br != null) try { br.close(); } catch (IOException e) { }
+            if (isr != null) try { isr.close(); } catch (IOException e) { }
+            if (is != null) try { is.close(); } catch (IOException e) { }
+            if (httpConn != null) httpConn.disconnect();
+            Log.d(TAG, "POST message END!");
+        }
+
+        return sb.toString();
+    }
+
+
 
     private static String convertToOiginal(String unicode) {
         String[] codeStrs = unicode.split("\\\\u");
