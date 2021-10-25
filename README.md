@@ -5,6 +5,19 @@ DTNFileShareのプロジェクト
 
 SendSlackMessaage.javaのSLACK_BOT_TOKENは認証トークンを公開するとslackがそれを無効化してしまうため""にしている
 
+Android Studio バージョン4.1.3
+
+DTNFileShare全体の使い方の説明
+[https://github.com/kennkyuu932/DTNFileShare_explanation](https://github.com/kennkyuu932/DTNFileShare_explanation)
+
+動作端末
+
+Xperia 1 (Androidバージョン 10,11)
+
+Galaxy A41 (Androidバージョン 11)
+
+VAIO Phone A (Androidバージョン 6.0.1)
+
 ## 使い方
 
 /app/scr/main/java/de/tub/ibr/dtn/sharebox/SendSlackMessage.javaの変数SLACK_APP_TOKENに作成したSlack appのBot User OAuth Token の文字列を入力
