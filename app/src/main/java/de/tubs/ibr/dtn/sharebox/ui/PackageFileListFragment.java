@@ -16,6 +16,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -196,10 +197,17 @@ public class PackageFileListFragment extends ListFragment implements LoaderManag
         if (item != null) {
         	File f = item.getObject().getFile();
 
+        	/*
         	Intent newIntent = new Intent(android.content.Intent.ACTION_VIEW);
         	newIntent.setDataAndType(Uri.fromFile(f), Utils.getMimeType(f.getAbsolutePath()));
         	newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        	 */
+            Intent newIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            newIntent.setType("image/*");
+            newIntent.addCategory(Intent.CATEGORY_OPENABLE);
         	try {
+        	    Log.d(TAG,"ファイルの保存先のパス " + f.getAbsolutePath());
         	    startActivity(newIntent);//startActivity(newIntent)→
         	} catch (android.content.ActivityNotFoundException e) {
         	    Toast.makeText(getActivity(), getString(R.string.hint_no_handler_for_type), Toast.LENGTH_LONG).show();

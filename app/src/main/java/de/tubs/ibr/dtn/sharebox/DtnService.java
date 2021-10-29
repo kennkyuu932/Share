@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.arch.persistence.room.Room;
@@ -26,6 +27,7 @@ import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.res.TypedArrayUtils;
 import android.util.Log;
 
@@ -200,6 +202,13 @@ public class DtnService extends DTNIntentService {
     
     @Override
     protected synchronized void onHandleIntent(Intent intent) {
+        //ForeGround()の開始
+        String channelid = "Receive";
+        Notification notification = new NotificationCompat.Builder(this, channelid)
+                .setContentTitle("")
+                .setContentText("").build();
+        startForeground(0,notification);
+        //
         String action = intent.getAction();
         
         if (de.tubs.ibr.dtn.Intent.RECEIVE.equals(action))
@@ -213,6 +222,8 @@ public class DtnService extends DTNIntentService {
                 mIsDownloading = false;
                 while (mSession.queryInfoNext());
                 Log.d(TAG,"エラー確認 Receive try while");
+                //Foreground終了
+                stopForeground(0);
             } catch (SessionDestroyedException e) {
                 Log.e(TAG, "Can not query for bundle", e);
             }
