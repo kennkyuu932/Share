@@ -3,6 +3,8 @@
 
 DTNFileShareのプロジェクト
 
+APIが26以上の時はbranch:API26overを参照,14以上,26未満の時は,branch:master参照
+
 SendSlackMessaage.javaのSLACK_BOT_TOKENは認証トークンを公開するとslackがそれを無効化してしまうため""にしている
 
 Android Studio バージョン4.1.3
