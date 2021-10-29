@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TransferListActivity" >
+    tools:context=".ui.TransferListActivity" >
 
     <fragment android:name="de.tubs.ibr.dtn.sharebox.ui.DownloadListFragment"
         android:id="@+id/received_fragment"

@@ -200,7 +200,7 @@ public class PackageFileListFragment extends ListFragment implements LoaderManag
         	newIntent.setDataAndType(Uri.fromFile(f), Utils.getMimeType(f.getAbsolutePath()));
         	newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	try {
-        	    startActivity(newIntent);
+        	    startActivity(newIntent);//startActivity(newIntent)→
         	} catch (android.content.ActivityNotFoundException e) {
         	    Toast.makeText(getActivity(), getString(R.string.hint_no_handler_for_type), Toast.LENGTH_LONG).show();
         	}

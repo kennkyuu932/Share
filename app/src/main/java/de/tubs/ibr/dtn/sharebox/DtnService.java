@@ -209,8 +209,10 @@ public class DtnService extends DTNIntentService {
             try {
                 // We loop here until no more bundles are available
                 // (queryNext() returns false)
+                Log.d(TAG,"エラー確認 Receive try ");
                 mIsDownloading = false;
                 while (mSession.queryInfoNext());
+                Log.d(TAG,"エラー確認 Receive try while");
             } catch (SessionDestroyedException e) {
                 Log.e(TAG, "Can not query for bundle", e);
             }
