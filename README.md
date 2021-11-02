@@ -66,4 +66,8 @@ READMEにこのアプリの使い方を記述
 #### 20211029
 APIが26以上の時画像が受け取れないため,APIが26以上の時と,それ以外の時でアップロードするブランチを分けた.
 
+DtnReceiverがDtnServiceを呼び出す際のcontext.startService(i)がAPI26未満だと正常に動作しないため,context.ForegroundService(i)に変更
+
+上の変更に伴い,インテントを受け取るDtnServiceにstartForeground()とstopForeground()を追加
+
 バンドル送信時,バンドル受け取り時の通知がない(送信時の通知はたいして意味がないが,受信時の通知がないため,ファイルのダウンロードはアプリを開かなければならない)

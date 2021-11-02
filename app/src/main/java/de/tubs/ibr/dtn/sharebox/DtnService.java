@@ -218,10 +218,8 @@ public class DtnService extends DTNIntentService {
             try {
                 // We loop here until no more bundles are available
                 // (queryNext() returns false)
-                Log.d(TAG,"エラー確認 Receive try ");
                 mIsDownloading = false;
                 while (mSession.queryInfoNext());
-                Log.d(TAG,"エラー確認 Receive try while");
                 //Foreground終了
                 stopForeground(0);
             } catch (SessionDestroyedException e) {
@@ -247,6 +245,9 @@ public class DtnService extends DTNIntentService {
             
             // retrieve the bundle ID of the intent
             BundleID bundleid = intent.getParcelableExtra(EXTRA_KEY_BUNDLE_ID);
+
+            //Foreground()終了
+            stopForeground(0);
             
             Log.d(TAG, "Status report received for " + bundleid.toString() + " from " + source.toString());
         }

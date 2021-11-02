@@ -12,7 +12,7 @@ public class DtnReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         Log.d(TAG,"onReceive");
-        Log.d(TAG,context.toString());
+        //Log.d(TAG,context.toString());
         
         if (action.equals(de.tubs.ibr.dtn.Intent.RECEIVE))
         {
@@ -22,7 +22,6 @@ public class DtnReceiver extends BroadcastReceiver {
             i.setAction(de.tubs.ibr.dtn.Intent.RECEIVE);
             Log.d(TAG,"IntentactionReceive");
             context.startForegroundService(i);//エラー  startForegroundService()を使ってみる?→VAIOでの実行が出来なくなる.VAIOの時はstartService(i)
-            Log.d(TAG,"エラー確認 Receive");
         }
         else if (action.equals(de.tubs.ibr.dtn.Intent.STATUS_REPORT))
         {
@@ -32,8 +31,8 @@ public class DtnReceiver extends BroadcastReceiver {
             i.setAction(DtnService.REPORT_DELIVERED_INTENT);
             i.putExtra("source", intent.getParcelableExtra("source"));
             i.putExtra("bundleid", intent.getParcelableExtra("bundleid"));
-            Log.d(TAG,"IntentAtatusReport");
-            context.startService(i);
+            Log.d(TAG,"IntentStatusReport");
+            context.startForegroundService(i);// startForegroundService()に変更
         }
         else if (action.equals(de.tubs.ibr.dtn.Intent.STATE))
         {
@@ -43,7 +42,7 @@ public class DtnReceiver extends BroadcastReceiver {
                 Intent i = new Intent(context, DtnService.class);
                 i.setAction(de.tubs.ibr.dtn.Intent.RECEIVE);
                 Log.d(TAG,"IntentState");
-                context.startService(i);
+                context.startForegroundService(i);// startForegroundService()に変更
             }
         }
     }
